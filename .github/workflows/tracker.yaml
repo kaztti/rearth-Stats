@@ -1,8 +1,5 @@
 name: Minecraft Stats Tracker
 on:
-  push:
-    branches:
-      - master
   schedule:
     - cron: '*/10 * * * *' # Every 10 minutes
   workflow_dispatch: # Allows manual testing
@@ -16,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.PAT_PUSH }} # https://stackoverflow.com/a/77447725/15776812
+          persist-credentials: false # https://github.com/orgs/community/discussions/25702#discussioncomment-3248819
 
       - uses: actions/setup-node@v6
       - run: node ping.js ${{ secrets.SERVER_TYPE }} ${{ secrets.SERVER_IP }} ${{ secrets.SERVER_PORT }}
@@ -30,4 +30,5 @@ jobs:
           git config --global user.email "${{ steps.bot-details.outputs.email }}"
           git add stats.json
           git commit -m "[ bot ] Update server stats"
+          git remote set-url origin "https://x-access-token:${{ secrets.PAT_PUSH }}@github.com/${{ github.repository }}"
           git push origin
