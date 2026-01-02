@@ -1,7 +1,0 @@
-{
-    "name": "minecraft-stats",
-    "version": "1.0.0",
-    "scripts": {
-        "build": "mkdir -p build && cp index.html build/"
-    }
-}
