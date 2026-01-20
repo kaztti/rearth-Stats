@@ -67,9 +67,9 @@
 
     <div class="controls">
         <button onclick="filterRange(1)" id="btn-1h">1時間</button>
-        <button onclick="filterRange(24)" id="btn-24h" class="active">24時間</button>
+        <button onclick="filterRange(24)" id="btn-24h">24時間</button>
         <button onclick="filterRange(168)" id="btn-1w">1週間</button>
-        <button onclick="filterRange(0)" id="btn-all">すべて</button>
+        <button onclick="filterRange(0)" id="btn-all" class="active">すべて</button>
     </div>
 
     <div class="chart-container">
@@ -88,24 +88,19 @@
         let statusChartInstance = null;
 
         async function loadData() {
-            let statsUrl = 'stats.json';
-
-            if (window.location.hostname.endsWith('github.io')) {
-                const user = window.location.hostname.split('.')[0];
-                const repo = window.location.pathname.split('/')[1];
-                if (user && repo) {
-                    statsUrl = `https://raw.githubusercontent.com/${user}/${repo}/refs/heads/master/stats.json`;
-                }
-            }
+            let statsUrl = './stats.json';
 
             statsUrl += `?t=${new Date().getTime()}`;
 
             try {
                 const response = await fetch(statsUrl);
+                if (!response.ok) throw new Error('Network response was not ok');
                 allStatsData = await response.json();
-                filterRange(24);
+                
+                filterRange(0);
             } catch (error) {
-                console.error("データの読み込みに失敗しました:", error);
+                console.error("データの読み込みに失敗しました。stats.jsonが存在するか確認してください。:", error);
+                alert("データの読み込みに失敗しました。GitHub Actionsが完了して stats.json が生成されるまで待つか、ブランチ設定を確認してください。");
             }
         }
 
@@ -115,6 +110,8 @@
             if(hours === 24) document.getElementById('btn-24h').classList.add('active');
             if(hours === 168) document.getElementById('btn-1w').classList.add('active');
             if(hours === 0) document.getElementById('btn-all').classList.add('active');
+
+            if (!allStatsData || allStatsData.length === 0) return;
 
             let filteredData = allStatsData;
 
@@ -128,6 +125,11 @@
         }
 
         function renderCharts(data) {
+            if (data.length === 0) {
+                console.warn("指定された期間のデータがありません。");
+                return;
+            }
+
             const labels = data.map(entry => {
                 return new Date(entry.time).toLocaleString([], {
                     month: 'numeric',
@@ -139,11 +141,10 @@
 
             const playerCounts = data.map(entry => entry.players);
             const statusValues = data.map(entry => entry.online ? 1 : 0);
-            
+
             if (playerChartInstance) playerChartInstance.destroy();
             if (statusChartInstance) statusChartInstance.destroy();
 
-            // プレイヤー数グラフ
             playerChartInstance = new Chart(document.getElementById('playerChart'), {
                 type: 'line',
                 data: {
@@ -163,3 +164,39 @@
                     scales: {
                         y: { beginAtZero: true, ticks: { precision: 0 } }
                     }
+                }
+            });
+
+            statusChartInstance = new Chart(document.getElementById('statusChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '稼働状態',
+                        data: statusValues,
+                        borderColor: '#2ecc71',
+                        borderWidth: 2,
+                        fill: false,
+                        stepped: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            min: -0.1,
+                            max: 1.1,
+                            ticks: {
+                                callback: value => value === 1 ? 'ONLINE' : (value === 0 ? 'OFFLINE' : '')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        loadData();
+    </script>
+</body>
+
+</html>
