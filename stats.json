@@ -1,5 +1,5 @@
 [
-{
+  {
     "time": "2026-01-20T09:25:38.699Z",
     "online": true,
     "players": 61
@@ -28,5 +28,10 @@
     "time": "2026-01-20T11:03:51.176Z",
     "online": true,
     "players": 48
-  } 
+  },
+  {
+    "time": "2026-01-20T11:32:56.197Z",
+    "online": true,
+    "players": 49
+  }
 ]
