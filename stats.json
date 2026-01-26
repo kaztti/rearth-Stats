@@ -1573,5 +1573,10 @@
     "time": "2026-01-26T19:05:04.387Z",
     "online": true,
     "players": 1
+  },
+  {
+    "time": "2026-01-26T19:33:48.620Z",
+    "online": true,
+    "players": 2
   }
 ]
