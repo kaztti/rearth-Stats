@@ -2203,5 +2203,10 @@
     "time": "2026-01-29T22:01:15.799Z",
     "online": true,
     "players": 6
+  },
+  {
+    "time": "2026-01-29T22:39:51.815Z",
+    "online": true,
+    "players": 15
   }
 ]
