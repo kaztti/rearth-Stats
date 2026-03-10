@@ -8418,5 +8418,10 @@
     "time": "2026-03-10T10:00:12.213Z",
     "online": true,
     "players": 45
+  },
+  {
+    "time": "2026-03-10T10:54:30.253Z",
+    "online": false,
+    "players": 0
   }
 ]
