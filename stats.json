@@ -14953,5 +14953,10 @@
     "time": "2026-05-05T23:59:00.325Z",
     "online": true,
     "players": 20
+  },
+  {
+    "time": "2026-05-06T03:56:14.307Z",
+    "online": true,
+    "players": 50
   }
 ]
